@@ -49,13 +49,15 @@ Vagrant.configure(2) do |config|
   
     ###set -x  ## turn on command echo with expanded variables
     # List of dependency versions
-    export ACCUMULO_VERSION=1.6.5
-    ###export ACCUMULO_VERSION=1.7.1
+    ###export ACCUMULO_VERSION=1.6.5
+    export ACCUMULO_VERSION=1.7.3
+    ###export HADOOP_VERSION=2.7.2
     export HADOOP_VERSION=2.7.2
     export RYA_EXAMPLE_VERSION=3.2.10-SNAPSHOT
     export SESAME_VERSION=2.7.6
-    export ZOOKEEPER_VERSION=3.4.5-cdh4.5.0
-    
+    ###export ZOOKEEPER_VERSION=3.4.5-cdh4.5.0
+    export ZOOKEEPER_VERSION=3.4.5-cdh5.7.1
+
     echo "Updating host file with permanent ip"
 	sudo sed -i 's/127.0.1.1/192.168.33.10/' /etc/hosts
     cat >> /etc/hosts <<EOF
@@ -156,10 +158,10 @@ EOF
         exit 800
       fi
     }
-    ### wait for a directory to exist or 60 seconds timeout
+    ### wait for a directory to exist or 300 seconds timeout
     function waitForDeploy {
         waitfordir="$1"
-        timeout=60
+        timeout=300
         while [[ ! -d  "$waitfordir" ]]  
         do
             sleep 5
@@ -180,7 +182,8 @@ EOF
     fi
 
     echo "- Zookeeper"
-    zookeeperUrl=http://archive-primary.cloudera.com/cdh4/cdh/4/zookeeper-${ZOOKEEPER_VERSION}.tar.gz
+    ###zookeeperUrl=http://archive-primary.cloudera.com/cdh4/cdh/4/zookeeper-${ZOOKEEPER_VERSION}.tar.gz
+    zookeeperUrl=http://archive.cloudera.com/cdh5/cdh/5/zookeeper-${ZOOKEEPER_VERSION}.tar.gz
     if [[ ! -d ${ZOOKEEPER_HOME} ]] ; then
         echo "Downloading $zookeeperUrl"
         download $zookeeperUrl \
@@ -313,7 +316,8 @@ EOF
 	if [[ ! -s ${ryaIndexing}.zip ]] ; then
 		# Right now it's on dropbox, but eventually it'll be on maven...
 		echo "Downloading quietly, this will take some minutes with no output..."
-		download --output ${ryaIndexing}.zip https://dl.dropbox.com/s/7e74yiuq4jmu0od/${ryaIndexing}.zip?raw=1  || exit 112
+
+		download --output ${ryaIndexing}.zip dl.dropboxusercontent.com/s/7e74yiuq4jmu0od/${ryaIndexing}.zip?raw=1 || exit 112
 	fi
 	sudo mkdir --parents ${ryaIndexing}
 	sudo unzip -q -o ${ryaIndexing}.zip -d ${ryaIndexing}
@@ -350,7 +354,7 @@ EOF
 	ryaWar=web.rya-${RYA_EXAMPLE_VERSION}.war
 	if [[ ! -s ${ryaWar} ]] ; then
 		echo "Downloading"
-		download https://dl.dropbox.com/s/332wr4b2f34dp6e/${ryaWar}?raw=1 --output ${ryaWar} || exit 121
+		download https://www.dropbox.com/s/ip9r5tum8c21nrt/web.rya.war?dl=0 --output ${ryaWar} || exit 121
 	fi
 	sudo cp ${ryaWar} /var/lib/tomcat7/webapps/web.rya.war
 	# Wait for the war to deploy
