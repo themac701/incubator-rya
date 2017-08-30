@@ -354,7 +354,7 @@ EOF
 	ryaWar=web.rya-${RYA_EXAMPLE_VERSION}.war
 	if [[ ! -s ${ryaWar} ]] ; then
 		echo "Downloading"
-		download https://www.dropbox.com/s/ecacu4cmt314u4x/web.rya.war?dl=0 --output ${ryaWar} || exit 121
+		download https://www.dropbox.com/s/f1w3ppeh6sv0y9q/web.rya.war?dl=0 --output ${ryaWar} || exit 121
 	fi
 	sudo cp ${ryaWar} /var/lib/tomcat7/webapps/web.rya.war
 	# Wait for the war to deploy
